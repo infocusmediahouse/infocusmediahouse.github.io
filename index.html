@@ -46,9 +46,8 @@
         }
 
         nav.scrolled {
-            background: rgba(255, 255, 255, 0.98);
+            background: transparent;
             padding: 1.5rem 4rem;
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
         }
 
         .nav-links {
@@ -75,20 +74,19 @@
             font-size: 1.2rem;
         }
 
-        /* Rotating Asterisk - Pinned to Left Edge */
+        /* Rotating Asterisk - Top Left Corner */
         .asterisk-container {
             position: fixed;
-            top: 50%;
-            left: -40px; /* Half of the asterisk is off-screen */
-            transform: translateY(-50%);
+            top: 1rem;
+            left: -80px; /* Adjusted for bigger size */
             z-index: 999;
             pointer-events: none;
         }
 
         .asterisk-symbol {
-            font-size: 120px;
+            font-size: 300px; /* Even bigger */
             color: var(--red);
-            font-weight: 700;
+            font-weight: 300; /* Thinner - was 700 */
             line-height: 1;
             transform-origin: center center;
             transition: transform 0.1s linear;
@@ -96,18 +94,19 @@
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding: 0 4rem;
+            justify-content: center;
+            padding: 8rem 4rem 4rem 4rem;
             position: relative;
+            background: var(--white);
         }
 
         .hero-content {
-            max-width: 650px;
+            max-width: 900px;
+            text-align: center;
             z-index: 100;
-            margin-right: 8rem;
         }
 
         .hero-title {
@@ -137,27 +136,25 @@
             font-weight: 300;
             animation: fadeInUp 1s ease 0.3s forwards;
             opacity: 0;
+            max-width: 650px;
+            margin: 0 auto;
         }
 
-        .hero-meta {
-            position: absolute;
-            bottom: 4rem;
-            right: 4rem;
-            text-align: right;
-            font-size: 0.9rem;
-            color: var(--black);
-            animation: fadeInUp 1s ease 0.5s forwards;
+        /* Hero Image Section */
+        .hero-image {
+            width: 100%;
+            height: 70vh;
+            position: relative;
+            overflow: hidden;
+            background: var(--light-gray);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: fadeIn 1.5s ease forwards;
             opacity: 0;
-        }
-
-        .hero-location {
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-        }
-
-        .hero-time {
-            font-weight: 300;
-            color: var(--dark-gray);
         }
 
         /* Sections */
@@ -328,6 +325,12 @@
             }
         }
 
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             nav {
@@ -351,26 +354,25 @@
             }
 
             .hero {
-                padding: 0 2rem;
-                justify-content: center;
+                padding: 6rem 2rem 3rem 2rem;
+                min-height: 60vh;
             }
 
             .hero-content {
-                margin-right: 0;
                 max-width: 100%;
             }
 
-            .hero-meta {
-                bottom: 2rem;
-                right: 2rem;
+            .hero-image {
+                height: 50vh;
             }
 
             .asterisk-container {
-                left: -30px;
+                left: -60px;
+                top: 0.5rem;
             }
 
             .asterisk-symbol {
-                font-size: 80px;
+                font-size: 200px; /* Bigger on mobile too */
             }
 
             .contact-info {
@@ -407,11 +409,12 @@
             <h2 class="hero-subtitle">your brand didn't know it needed.</h2>
             <p class="hero-description">Equal parts artists, engineers, and marketing troublemakers. It's the kind of fusion that makes brands impossible to ignore.</p>
         </div>
-        <div class="hero-meta">
-            <div class="hero-location">Your City, Country</div>
-            <div class="hero-time" id="currentTime">12:00 PM</div>
-        </div>
     </section>
+
+    <!-- Hero Image -->
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80" alt="Infocus Media House">
+    </div>
 
     <!-- About Section -->
     <section class="about" id="about">
@@ -519,19 +522,6 @@
                 nav.classList.remove('scrolled');
             }
         });
-
-        // Live time update
-        function updateTime() {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const displayHours = hours % 12 || 12;
-            const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
-            document.getElementById('currentTime').textContent = `${displayHours}:${displayMinutes} ${ampm}`;
-        }
-        updateTime();
-        setInterval(updateTime, 1000);
 
         // Intersection Observer for animations
         const observerOptions = {
