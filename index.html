@@ -39,109 +39,59 @@
             z-index: 1000;
             padding: 2rem 4rem;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            transition: padding 0.3s ease;
+            background: transparent;
+            transition: all 0.3s ease;
         }
 
         nav.scrolled {
-            padding: 1rem 4rem;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-            color: var(--black);
-        }
-
-        .logo span {
-            color: var(--red);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 1.5rem 4rem;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
         }
 
         .nav-links {
             display: flex;
             gap: 3rem;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
             text-decoration: none;
             color: var(--black);
-            font-weight: 500;
+            font-weight: 400;
             font-size: 0.95rem;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             transition: color 0.3s ease;
-            position: relative;
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--red);
-            transition: width 0.3s ease;
+        .nav-links a:hover {
+            color: var(--red);
         }
 
-        .nav-links a:hover::after {
-            width: 100%;
+        .nav-links .social-link {
+            font-size: 1.2rem;
         }
 
-        /* 3D Rotating Asterisk */
+        /* Rotating Asterisk - Pinned to Left Edge */
         .asterisk-container {
             position: fixed;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 400px;
-            height: 400px;
-            z-index: 10;
+            left: -40px; /* Half of the asterisk is off-screen */
+            transform: translateY(-50%);
+            z-index: 999;
             pointer-events: none;
-            perspective: 1000px;
         }
 
-        .asterisk-3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out;
-        }
-
-        .asterisk-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 200px;
+        .asterisk-symbol {
+            font-size: 120px;
             color: var(--red);
             font-weight: 700;
-            backface-visibility: visible;
-            opacity: 0.15;
-        }
-
-        .asterisk-face:nth-child(1) {
-            transform: rotateY(0deg) translateZ(100px);
-        }
-
-        .asterisk-face:nth-child(2) {
-            transform: rotateY(90deg) translateZ(100px);
-        }
-
-        .asterisk-face:nth-child(3) {
-            transform: rotateY(180deg) translateZ(100px);
-        }
-
-        .asterisk-face:nth-child(4) {
-            transform: rotateY(270deg) translateZ(100px);
+            line-height: 1;
+            transform-origin: center center;
+            transition: transform 0.1s linear;
         }
 
         /* Hero Section */
@@ -149,34 +99,65 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             padding: 0 4rem;
             position: relative;
         }
 
         .hero-content {
-            text-align: center;
-            max-width: 900px;
+            max-width: 650px;
             z-index: 100;
+            margin-right: 8rem;
         }
 
         .hero-title {
-            font-size: clamp(3rem, 8vw, 7rem);
-            font-weight: 700;
-            letter-spacing: -3px;
-            line-height: 0.95;
-            margin-bottom: 2rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 0;
             animation: fadeInUp 1s ease forwards;
             opacity: 0;
         }
 
         .hero-subtitle {
-            font-size: clamp(1.2rem, 2vw, 1.5rem);
-            color: var(--dark-gray);
-            font-weight: 300;
-            letter-spacing: 1px;
-            animation: fadeInUp 1s ease 0.2s forwards;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.1s forwards;
             opacity: 0;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            line-height: 1.7;
+            font-weight: 300;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .hero-meta {
+            position: absolute;
+            bottom: 4rem;
+            right: 4rem;
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--black);
+            animation: fadeInUp 1s ease 0.5s forwards;
+            opacity: 0;
+        }
+
+        .hero-location {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-time {
+            font-weight: 300;
+            color: var(--dark-gray);
         }
 
         /* Sections */
@@ -347,22 +328,6 @@
             }
         }
 
-        /* Mobile Menu */
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .mobile-menu-toggle span {
-            width: 25px;
-            height: 2px;
-            background: var(--black);
-            transition: all 0.3s ease;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             nav {
@@ -373,26 +338,12 @@
                 padding: 1rem 2rem;
             }
 
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
             .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 100%;
-                height: 100vh;
-                background: var(--white);
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                gap: 2rem;
-                transition: right 0.3s ease;
+                gap: 1.5rem;
             }
 
-            .nav-links.active {
-                right: 0;
+            .nav-links a {
+                font-size: 0.85rem;
             }
 
             section {
@@ -401,15 +352,25 @@
 
             .hero {
                 padding: 0 2rem;
+                justify-content: center;
+            }
+
+            .hero-content {
+                margin-right: 0;
+                max-width: 100%;
+            }
+
+            .hero-meta {
+                bottom: 2rem;
+                right: 2rem;
             }
 
             .asterisk-container {
-                width: 250px;
-                height: 250px;
+                left: -30px;
             }
 
-            .asterisk-face {
-                font-size: 120px;
+            .asterisk-symbol {
+                font-size: 80px;
             }
 
             .contact-info {
@@ -425,36 +386,30 @@
 <body>
     <!-- Navigation -->
     <nav id="nav">
-        <div class="logo">IN<span>FOCUS</span></div>
-        <div class="mobile-menu-toggle" id="mobileToggle">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
+        <ul class="nav-links">
             <li><a href="#services">Services</a></li>
             <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
+            <li><a href="#" class="social-link">📷</a></li>
         </ul>
     </nav>
 
-    <!-- 3D Rotating Asterisk -->
-    <div class="asterisk-container">
-        <div class="asterisk-3d" id="asterisk">
-            <div class="asterisk-face">✱</div>
-            <div class="asterisk-face">✱</div>
-            <div class="asterisk-face">✱</div>
-            <div class="asterisk-face">✱</div>
-        </div>
+    <!-- Rotating Asterisk -->
+    <div class="asterisk-container" id="asteriskContainer">
+        <div class="asterisk-symbol" id="asterisk">✱</div>
     </div>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1 class="hero-title">INFOCUS<br>MEDIA HOUSE</h1>
-            <p class="hero-subtitle">Bringing your vision into focus</p>
+            <h1 class="hero-title">We're the creative-tech hybrids</h1>
+            <h2 class="hero-subtitle">your brand didn't know it needed.</h2>
+            <p class="hero-description">Equal parts artists, engineers, and marketing troublemakers. It's the kind of fusion that makes brands impossible to ignore.</p>
+        </div>
+        <div class="hero-meta">
+            <div class="hero-location">Your City, Country</div>
+            <div class="hero-time" id="currentTime">12:00 PM</div>
         </div>
     </section>
 
@@ -543,22 +498,16 @@
     </footer>
 
     <script>
-        // 3D Asterisk Rotation on Scroll
+        // Asterisk Pinwheel Rotation on Scroll
         const asterisk = document.getElementById('asterisk');
-        let lastScrollY = window.scrollY;
+        const asteriskContainer = document.getElementById('asteriskContainer');
+        let rotation = 0;
 
         window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const scrollSpeed = scrollY - lastScrollY;
-            
-            // Rotate based on scroll position
-            const rotateX = scrollY * 0.1;
-            const rotateY = scrollY * 0.2;
-            const rotateZ = scrollSpeed * 2;
-            
-            asterisk.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
-            
-            lastScrollY = scrollY;
+            // Rotate the asterisk based on scroll position
+            // Spins clockwise as you scroll down
+            rotation = window.scrollY * 0.5;
+            asterisk.style.transform = `rotate(${rotation}deg)`;
         });
 
         // Navbar scroll effect
@@ -570,6 +519,19 @@
                 nav.classList.remove('scrolled');
             }
         });
+
+        // Live time update
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const displayHours = hours % 12 || 12;
+            const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('currentTime').textContent = `${displayHours}:${displayMinutes} ${ampm}`;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
 
         // Intersection Observer for animations
         const observerOptions = {
@@ -588,21 +550,6 @@
         // Observe all animated elements
         document.querySelectorAll('.section-title, .section-content, .service-card, .contact-item').forEach(el => {
             observer.observe(el);
-        });
-
-        // Mobile menu toggle
-        const mobileToggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
-
-        mobileToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
         });
 
         // Smooth scroll
