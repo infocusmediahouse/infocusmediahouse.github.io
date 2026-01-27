@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infocus Media House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #FF4444;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --dark-gray: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: transparent;
+            padding: 1.5rem 4rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 400;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--red);
+        }
+
+        .nav-links .social-link {
+            font-size: 1.2rem;
+        }
+
+        /* Rotating Asterisk - Top Left Corner */
+        .asterisk-container {
+            position: fixed;
+            top: 1rem;
+            left: -80px; /* Adjusted for bigger size */
+            z-index: 999;
+            pointer-events: auto; /* Changed to auto for interactions */
+            cursor: grab;
+            animation: asteriskLoad 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+
+        .asterisk-container:active {
+            cursor: grabbing;
+        }
+
+        .asterisk-symbol {
+            font-size: 300px;
+            color: var(--red);
+            font-weight: 100; /* Even thinner - lightest weight */
+            line-height: 1;
+            transform-origin: center center;
+            transition: transform 0.3s ease-out;
+            user-select: none;
+        }
+
+        /* Load animation for asterisk */
+        @keyframes asteriskLoad {
+            0% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(-180deg) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 4rem 4rem 4rem;
+            position: relative;
+            background: var(--white);
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 0;
+            animation: fadeInUp 1s ease forwards;
+            opacity: 0;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            line-height: 1.7;
+            font-weight: 300;
+            animation: fadeInUp 1s ease 0.3s forwards;
+            opacity: 0;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Hero Image Section */
+        .hero-image {
+            width: 100%;
+            height: 70vh;
+            position: relative;
+            overflow: hidden;
+            background: var(--light-gray);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: fadeIn 1.5s ease forwards;
+            opacity: 0;
+        }
+
+        /* Sections */
+        section {
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .section-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-content {
+            max-width: 800px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--dark-gray);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease 0.2s;
+        }
+
+        .section-content.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* About Section */
+        .about {
+            background: var(--light-gray);
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .service-card {
+            padding: 3rem;
+            background: var(--white);
+            border-radius: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .service-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .service-description {
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        /* Work Section */
+        .work {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .work .section-title,
+        .work .section-content {
+            color: var(--white);
+        }
+
+        /* Contact Section */
+        .contact {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 4rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .contact-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contact-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .contact-value a {
+            color: var(--black);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-value a:hover {
+            color: var(--red);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 4rem;
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            nav.scrolled {
+                padding: 1rem 2rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
+            }
+
+            section {
+                padding: 4rem 2rem;
+            }
+
+            .hero {
+                padding: 6rem 2rem 3rem 2rem;
+                min-height: 60vh;
+            }
+
+            .hero-content {
+                max-width: 100%;
+            }
+
+            .hero-image {
+                height: 50vh;
+            }
+
+            .asterisk-container {
+                left: -60px;
+                top: 0.5rem;
+            }
+
+            .asterisk-symbol {
+                font-size: 200px; /* Bigger on mobile too */
+            }
+
+            .contact-info {
+                gap: 2rem;
+            }
+
+            footer {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="nav">
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#" class="social-link">📷</a></li>
+        </ul>
+    </nav>
+
+    <!-- Rotating Asterisk -->
+    <div class="asterisk-container" id="asteriskContainer">
+        <div class="asterisk-symbol" id="asterisk">✱</div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">We're the creative-tech hybrids</h1>
+            <h2 class="hero-subtitle">your brand didn't know it needed.</h2>
+            <p class="hero-description">Equal parts artists, engineers, and marketing troublemakers. It's the kind of fusion that makes brands impossible to ignore.</p>
+        </div>
+    </section>
+
+    <!-- Hero Image -->
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80" alt="Infocus Media House">
+    </div>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <h2 class="section-title">About Us</h2>
+        <div class="section-content">
+            <p>At Infocus Media House, we specialize in creating compelling visual content that tells your story. We're a team of passionate creatives dedicated to transforming ideas into stunning realities through the lens of innovation and artistry.</p>
+            <br>
+            <p>Our approach combines technical excellence with creative vision, ensuring every project not only meets but exceeds expectations. We believe in the power of visual storytelling to connect, inspire, and drive results.</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <h2 class="section-title">What We Do</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">📹</div>
+                <h3 class="service-title">Video Production</h3>
+                <p class="service-description">From concept to completion, we create cinematic videos that captivate and engage your audience.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📸</div>
+                <h3 class="service-title">Photography</h3>
+                <p class="service-description">Professional photography services that capture the essence of your brand with precision and style.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <h3 class="service-title">Creative Direction</h3>
+                <p class="service-description">Strategic creative solutions that align with your brand identity and business objectives.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">✂️</div>
+                <h3 class="service-title">Post-Production</h3>
+                <p class="service-description">Expert editing, color grading, and visual effects to polish your content to perfection.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📱</div>
+                <h3 class="service-title">Social Media Content</h3>
+                <p class="service-description">Engaging content designed specifically for social platforms to maximize reach and impact.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎬</div>
+                <h3 class="service-title">Brand Films</h3>
+                <p class="service-description">Compelling brand stories that resonate with your audience and elevate your market presence.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section class="work" id="work">
+        <h2 class="section-title">Our Work</h2>
+        <div class="section-content">
+            <p>We've had the privilege of working with diverse clients across industries, creating content that makes an impact. From corporate films to social campaigns, product launches to documentary-style content, each project is crafted with meticulous attention to detail and a commitment to excellence.</p>
+            <br>
+            <p>Our portfolio spans commercial, editorial, and creative work that pushes boundaries while delivering measurable results for our clients.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">Let's Work Together</h2>
+        <div class="section-content">
+            <p>Ready to bring your vision into focus? Get in touch with us to discuss your next project.</p>
+        </div>
+        <div class="contact-info">
+            <div class="contact-item">
+                <div class="contact-label">Email</div>
+                <div class="contact-value"><a href="mailto:hello@infocusmediahouse.com">hello@infocusmediahouse.com</a></div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-label">Phone</div>
+                <div class="contact-value"><a href="tel:+1234567890">+1 (234) 567-890</a></div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-label">Location</div>
+                <div class="contact-value">Your City, Country</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Infocus Media House. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Interactive Asterisk - Click, Touch, Swipe, and Scroll
+        const asterisk = document.getElementById('asterisk');
+        const asteriskContainer = document.getElementById('asteriskContainer');
+        let rotation = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let currentX = -80;
+        let currentY = 16; // 1rem in pixels
+
+        // Scroll rotation (keeps the original pinwheel effect)
+        window.addEventListener('scroll', () => {
+            if (!isDragging) {
+                rotation = window.scrollY * 0.5;
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+            }
+        });
+
+        // Click/Touch to spin
+        asteriskContainer.addEventListener('click', (e) => {
+            if (!isDragging) {
+                rotation += 360;
+                asterisk.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+                setTimeout(() => {
+                    asterisk.style.transition = 'transform 0.3s ease-out';
+                }, 600);
+            }
+        });
+
+        // Mouse drag
+        asteriskContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - currentX;
+            startY = e.clientY - currentY;
+            asterisk.style.transition = 'none';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+                asteriskContainer.style.left = `${currentX}px`;
+                asteriskContainer.style.top = `${currentY}px`;
+                
+                // Rotate while dragging
+                rotation += 5;
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                asterisk.style.transition = 'transform 0.3s ease-out';
+            }
+        });
+
+        // Touch/Swipe for mobile
+        asteriskContainer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            startX = touch.clientX - currentX;
+            startY = touch.clientY - currentY;
+            asterisk.style.transition = 'none';
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const touch = e.touches[0];
+                currentX = touch.clientX - startX;
+                currentY = touch.clientY - startY;
+                asteriskContainer.style.left = `${currentX}px`;
+                asteriskContainer.style.top = `${currentY}px`;
+                
+                // Rotate while swiping
+                rotation += 5;
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                asterisk.style.transition = 'transform 0.3s ease-out';
+            }
+        });
+
+        // Navbar scroll effect
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.section-title, .section-content, .service-card, .contact-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
