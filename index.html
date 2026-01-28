@@ -89,11 +89,12 @@
         .asterisk-symbol {
             font-size: 300px;
             color: var(--red);
-            font-weight: 100; /* Even thinner - lightest weight */
+            font-weight: 50; /* Super thin - minimum weight */
             line-height: 1;
             transform-origin: center center;
             transition: transform 0.3s ease-out;
             user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Load animation for asterisk */
@@ -110,50 +111,51 @@
 
         /* Hero Section */
         .hero {
-            min-height: 70vh;
+            min-height: 40vh; /* Reduced from 50vh */
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 8rem 4rem 4rem 4rem;
+            justify-content: flex-end; /* Shifted to right */
+            padding: 5rem 8rem 2rem 4rem; /* More padding on right */
             position: relative;
             background: var(--white);
         }
 
         .hero-content {
-            max-width: 900px;
-            text-align: center;
+            max-width: 700px; /* Reduced from 800px */
+            text-align: left; /* Changed from center to left */
             z-index: 100;
+            margin-right: 6rem; /* Increased from 4rem */
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: clamp(1.8rem, 4vw, 3rem); /* Even smaller */
             font-weight: 400;
             letter-spacing: -1px;
-            line-height: 1.2;
+            line-height: 1.15;
             margin-bottom: 0;
             animation: fadeInUp 1s ease forwards;
             opacity: 0;
         }
 
         .hero-subtitle {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-size: clamp(1.8rem, 4vw, 3rem); /* Even smaller */
             font-weight: 400;
             letter-spacing: -1px;
-            line-height: 1.2;
-            margin-bottom: 2rem;
+            line-height: 1.15;
+            margin-bottom: 1.2rem; /* Reduced spacing */
             animation: fadeInUp 1s ease 0.1s forwards;
             opacity: 0;
         }
 
         .hero-description {
-            font-size: 1.1rem;
+            font-size: 0.95rem; /* Smaller */
             color: var(--dark-gray);
-            line-height: 1.7;
+            line-height: 1.6;
             font-weight: 300;
             animation: fadeInUp 1s ease 0.3s forwards;
             opacity: 0;
-            max-width: 650px;
-            margin: 0 auto;
+            max-width: 550px; /* Reduced */
+            margin: 0; /* Removed auto centering */
         }
 
         /* Hero Image Section */
@@ -372,12 +374,19 @@
             }
 
             .hero {
-                padding: 6rem 2rem 3rem 2rem;
-                min-height: 60vh;
+                padding: 5rem 2rem 2rem 2rem;
+                min-height: 45vh;
+                justify-content: center;
             }
 
             .hero-content {
+                margin-right: 0;
                 max-width: 100%;
+                text-align: center;
+            }
+
+            .hero-description {
+                margin: 0 auto;
             }
 
             .hero-image {
