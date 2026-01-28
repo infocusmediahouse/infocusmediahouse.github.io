@@ -80,16 +80,32 @@
             top: 1rem;
             left: -80px; /* Adjusted for bigger size */
             z-index: 999;
-            pointer-events: none;
+            pointer-events: auto; /* Changed to auto for interactions */
+            cursor: pointer;
+            animation: asteriskLoad 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
         }
 
         .asterisk-symbol {
-            font-size: 300px; /* Even bigger */
+            font-size: 300px;
             color: var(--red);
-            font-weight: 300; /* Thinner - was 700 */
+            font-weight: 100; /* Even thinner - lightest weight */
             line-height: 1;
             transform-origin: center center;
-            transition: transform 0.1s linear;
+            transition: transform 0.3s ease-out;
+            user-select: none;
+        }
+
+        /* Load animation for asterisk */
+        @keyframes asteriskLoad {
+            0% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(-180deg) scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
         }
 
         /* Hero Section */
@@ -501,16 +517,65 @@
     </footer>
 
     <script>
-        // Asterisk Pinwheel Rotation on Scroll
+        // Interactive Asterisk - Click, Touch, Swipe, and Scroll
         const asterisk = document.getElementById('asterisk');
         const asteriskContainer = document.getElementById('asteriskContainer');
         let rotation = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let currentX = -80;
+        let currentY = 16; // 1rem in pixels
 
+        // Scroll rotation (keeps the original pinwheel effect)
         window.addEventListener('scroll', () => {
-            // Rotate the asterisk based on scroll position
-            // Spins clockwise as you scroll down
-            rotation = window.scrollY * 0.5;
-            asterisk.style.transform = `rotate(${rotation}deg)`;
+            if (!isDragging) {
+                rotation = window.scrollY * 0.5;
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+            }
+        });
+
+        // Click/Touch to spin
+        asteriskContainer.addEventListener('click', (e) => {
+            if (!isDragging) {
+                rotation += 360;
+                asterisk.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+                setTimeout(() => {
+                    asterisk.style.transition = 'transform 0.3s ease-out';
+                }, 600);
+            }
+        });
+
+        // Touch/Swipe for mobile
+        asteriskContainer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            startX = touch.clientX - currentX;
+            startY = touch.clientY - currentY;
+            asterisk.style.transition = 'none';
+            e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                const touch = e.touches[0];
+                currentX = touch.clientX - startX;
+                currentY = touch.clientY - startY;
+                asteriskContainer.style.left = `${currentX}px`;
+                asteriskContainer.style.top = `${currentY}px`;
+                
+                // Rotate while swiping
+                rotation += 5;
+                asterisk.style.transform = `rotate(${rotation}deg)`;
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                asterisk.style.transition = 'transform 0.3s ease-out';
+            }
         });
 
         // Navbar scroll effect
