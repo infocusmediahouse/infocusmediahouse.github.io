@@ -159,7 +159,8 @@
         /* Hero Image Section */
         .hero-image {
             width: 100%;
-            height: 70vh;
+            height: auto;
+            min-height: 400px;
             position: relative;
             overflow: hidden;
             background: var(--light-gray);
@@ -167,10 +168,11 @@
 
         .hero-image img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            object-fit: contain; /* Changed from cover to contain */
             animation: fadeIn 1.5s ease forwards;
             opacity: 0;
+            display: block;
         }
 
         /* Sections */
@@ -379,7 +381,7 @@
             }
 
             .hero-image {
-                height: 50vh;
+                min-height: 300px;
             }
 
             .asterisk-container {
