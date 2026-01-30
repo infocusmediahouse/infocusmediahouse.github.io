@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infocus Media House</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root { --red:#ff4444; }
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Outfit',sans-serif;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  right:0;
+  padding:2rem 4rem;
+  z-index:10;
+}
+
+/* ASTERISK */
+.asterisk-container{
+  position:fixed;
+  top:1rem;
+  left:-80px;
+  z-index:9;
+}
+
+.asterisk-symbol{
+  font-size:300px;
+  color:var(--red);
+  user-select:none;
+  transition:transform .3s ease-out;
+}
+
+/* HERO */
+.hero{
+  position:relative;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* WEBGL */
+#gl{
+  position:absolute;
+  inset:0;
+  z-index:0;
+}
+
+/* SOFT BLOOM */
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  backdrop-filter:blur(60px) saturate(120%);
+  z-index:1;
+}
+
+/* CONTENT */
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  padding:8rem 6rem;
+}
+
+.hero h1{
+  font-size:clamp(2.2rem,5vw,3.4rem);
+  font-weight:400;
+  line-height:1.1;
+}
+
+.hero p{
+  margin-top:1.2rem;
+  max-width:520px;
+  opacity:.7;
+  font-size:.95rem;
+}
+
+@media(max-width:768px){
+  .hero-content{
+    padding:6rem 2rem;
+    text-align:center;
+  }
+  .asterisk-symbol{font-size:200px}
+}
+</style>
+</head>
+
+<body>
+
+<nav></nav>
+
+<div class="asterisk-container">
+  <div class="asterisk-symbol" id="asterisk">✱</div>
+</div>
+
+<section class="hero">
+  <canvas id="gl"></canvas>
+  <div class="hero-content">
+    <h1>We're the creative-tech hybrids<br>your brand didn't know it needed.</h1>
+    <p>Equal parts artists, engineers, and marketing troublemakers.</p>
+  </div>
+</section>
+
+<script>
+/* ASTERISK — UNCHANGED */
+const asterisk=document.getElementById("asterisk");
+window.addEventListener("scroll",()=>{
+  asterisk.style.transform=`rotate(${window.scrollY*.4}deg)`;
+});
+
+/* PERFORMANCE */
+const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+const FPS = isLowEnd ? 30 : 60;
+let lastTime = 0;
+
+/* WEBGL */
+const canvas=document.getElementById("gl");
+const gl=canvas.getContext("webgl",{powerPreference:"low-power"});
+let t=0, mx=0,my=0;
+
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+addEventListener("resize",resize);
+resize();
+
+addEventListener("mousemove",e=>{
+  mx=e.clientX/innerWidth;
+  my=1-e.clientY/innerHeight;
+});
+
+const vert=`
+attribute vec2 p;
+void main(){ gl_Position=vec4(p,0.,1.); }
+`;
+
+const frag=`
+precision highp float;
+uniform vec2 r;
+uniform float t;
+uniform vec2 m;
+
+float n(vec2 p){
+  return fract(sin(dot(p,vec2(41.3,289.7)))*43758.5453);
+}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  f=f*f*(3.-2.*f);
+  return mix(
+    mix(n(i),n(i+vec2(1,0)),f.x),
+    mix(n(i+vec2(0,1)),n(i+vec2(1,1)),f.x),
+    f.y
+  );
+}
+
+void main(){
+  vec2 uv=gl_FragCoord.xy/r.xy;
+  vec2 p=uv*2.-1.;
+  p.x*=r.x/r.y;
+
+  /* FASTER + STRONGER FLOW */
+  float depth1=noise(p*2.5 + t*0.04);
+  float depth2=noise(p*5.0 - t*0.06);
+  float flow=depth1*0.7 + depth2*0.6;
+
+  float streak=smoothstep(.45,.0,abs(p.x+p.y*.6+flow*1.1));
+  float vignette=1.-length(p)*.5;
+
+  vec3 col=vec3(1.,.25,.25);
+  col+=.18*sin(vec3(0,2,4)+t*0.05+flow*6.);
+  col*=streak*1.6;
+  col*=vignette;
+
+  col+=.025*noise(uv*700.);
+  gl_FragColor=vec4(col,1.);
+}
+`;
+
+function compile(type,src){
+  const s=gl.createShader(type);
+  gl.shaderSource(s,src);
+  gl.compileShader(s);
+  return s;
+}
+
+const prog=gl.createProgram();
+gl.attachShader(prog,compile(gl.VERTEX_SHADER,vert));
+gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,frag));
+gl.linkProgram(prog);
+gl.useProgram(prog);
+
+const buf=gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+
+const loc=gl.getAttribLocation(prog,"p");
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+const ur=gl.getUniformLocation(prog,"r");
+const ut=gl.getUniformLocation(prog,"t");
+const um=gl.getUniformLocation(prog,"m");
+
+function draw(time){
+  if(time-lastTime<1000/FPS){requestAnimationFrame(draw);return;}
+  lastTime=time;
+
+  t+=1.1; /* 🔥 MUCH FASTER */
+  gl.uniform2f(ur,canvas.width,canvas.height);
+  gl.uniform1f(ut,t);
+  gl.uniform2f(um,mx,my);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+
+</body>
+</html>
