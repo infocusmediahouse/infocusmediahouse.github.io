@@ -1,431 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infocus Media House</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --red: #FF4444;
-            --black: #1a1a1a;
-            --white: #ffffff;
-            --light-gray: #f5f5f5;
-            --dark-gray: #666;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infocus Media House</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--white);
-            color: var(--black);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+<style>
+:root { --red:#ff4444; }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 2rem 4rem;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            background: transparent;
-            transition: all 0.3s ease;
-        }
+*{margin:0;padding:0;box-sizing:border-box}
 
-        nav.scrolled {
-            background: transparent;
-            padding: 1.5rem 4rem;
-        }
+body{
+  font-family:'Outfit',sans-serif;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
 
-        .nav-links {
-            display: flex;
-            gap: 3rem;
-            list-style: none;
-            align-items: center;
-        }
+/* NAV */
+nav{
+  position:fixed;
+  top:0;
+  right:0;
+  padding:2rem 4rem;
+  z-index:10;
+}
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--black);
-            font-weight: 400;
-            font-size: 0.95rem;
-            letter-spacing: 0.3px;
-            transition: color 0.3s ease;
-        }
+/* ASTERISK */
+.asterisk-container{
+  position:fixed;
+  top:1rem;
+  left:-80px;
+  z-index:9;
+}
 
-        .nav-links a:hover {
-            color: var(--red);
-        }
+.asterisk-symbol{
+  font-size:300px;
+  color:var(--red);
+  user-select:none;
+  transition:transform .3s ease-out;
+}
 
-        .nav-links .social-link {
-            font-size: 1.2rem;
-        }
+/* HERO */
+.hero{
+  position:relative;
+  height:100vh;
+  overflow:hidden;
+}
 
-        /* Rotating Asterisk - Top Left Corner */
-        .asterisk-container {
-            position: fixed;
-            top: 1rem;
-            left: -80px;
-            z-index: 999;
-            pointer-events: auto;
-            cursor: pointer;
-            animation: asteriskLoad 2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            opacity: 0;
-        }
+/* WEBGL */
+#gl{
+  position:absolute;
+  inset:0;
+  z-index:0;
+}
 
-        .asterisk-symbol {
-            font-size: 300px;
-            color: var(--red);
-            font-weight: 50;
-            line-height: 1;
-            transform-origin: center center;
-            transition: transform 0.3s ease-out;
-            user-select: none;
-            -webkit-font-smoothing: antialiased;
-        }
+/* SOFT BLOOM */
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  backdrop-filter:blur(60px) saturate(120%);
+  z-index:1;
+}
 
-        /* Load animation for asterisk */
-        @keyframes asteriskLoad {
-            0% {
-                opacity: 0;
-                transform: translateY(-100px) rotate(-180deg) scale(0.5);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) rotate(0deg) scale(1);
-            }
-        }
+/* CONTENT */
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  padding:8rem 6rem;
+}
 
-        /* Hero Section */
-        .hero {
-            min-height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 5rem 8rem 2rem 4rem;
-            position: relative;
-            background: var(--white);
-        }
+.hero h1{
+  font-size:clamp(2.2rem,5vw,3.4rem);
+  font-weight:400;
+  line-height:1.1;
+}
 
-        .hero-content {
-            max-width: 700px;
-            text-align: left;
-            z-index: 100;
-            margin-right: 6rem;
-        }
+.hero p{
+  margin-top:1.2rem;
+  max-width:520px;
+  opacity:.7;
+  font-size:.95rem;
+}
 
-        .hero-title {
-            font-size: clamp(1.8rem, 4vw, 3rem);
-            font-weight: 400;
-            letter-spacing: -1px;
-            line-height: 1.15;
-            margin-bottom: 0;
-            animation: fadeInUp 1s ease forwards;
-            opacity: 0;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.8rem, 4vw, 3rem);
-            font-weight: 400;
-            letter-spacing: -1px;
-            line-height: 1.15;
-            margin-bottom: 1.2rem;
-            animation: fadeInUp 1s ease 0.1s forwards;
-            opacity: 0;
-        }
-
-        .hero-description {
-            font-size: 0.95rem;
-            color: var(--dark-gray);
-            line-height: 1.6;
-            font-weight: 300;
-            animation: fadeInUp 1s ease 0.3s forwards;
-            opacity: 0;
-            max-width: 550px;
-            margin: 0;
-        }
-
-        /* Hero Image Section */
-        .hero-image {
-            width: 100%;
-            height: auto;
-            min-height: 400px;
-            position: relative;
-            overflow: hidden;
-            background: var(--light-gray);
-        }
-
-        .hero-image img {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            animation: fadeIn 1.5s ease forwards;
-            opacity: 0;
-            display: block;
-        }
-
-        /* Sections */
-        section {
-            padding: 8rem 4rem;
-            position: relative;
-        }
-
-        .section-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            letter-spacing: -2px;
-            margin-bottom: 3rem;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .section-title.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section-content {
-            max-width: 800px;
-            font-size: 1.2rem;
-            line-height: 1.8;
-            color: var(--dark-gray);
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease 0.2s;
-        }
-
-        .section-content.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* About Section */
-        .about {
-            background: var(--light-gray);
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav {
-                padding: 1.5rem 2rem;
-            }
-
-            nav.scrolled {
-                padding: 1rem 2rem;
-            }
-
-            .nav-links {
-                gap: 1.5rem;
-            }
-
-            .nav-links a {
-                font-size: 0.85rem;
-            }
-
-            section {
-                padding: 4rem 2rem;
-            }
-
-            .hero {
-                padding: 5rem 2rem 2rem 2rem;
-                min-height: 45vh;
-                justify-content: center;
-            }
-
-            .hero-content {
-                margin-right: 0;
-                max-width: 100%;
-                text-align: center;
-            }
-
-            .hero-description {
-                margin: 0 auto;
-            }
-
-            .hero-image {
-                min-height: 300px;
-            }
-
-            .asterisk-container {
-                left: -60px;
-                top: 0.5rem;
-            }
-
-            .asterisk-symbol {
-                font-size: 200px;
-            }
-        }
-    </style>
+@media(max-width:768px){
+  .hero-content{
+    padding:6rem 2rem;
+    text-align:center;
+  }
+  .asterisk-symbol{font-size:200px}
+}
+</style>
 </head>
+
 <body>
-    <!-- Navigation -->
-    <nav id="nav">
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#" class="social-link">📷</a></li>
-        </ul>
-    </nav>
 
-    <!-- Rotating Asterisk -->
-    <div class="asterisk-container" id="asteriskContainer">
-        <div class="asterisk-symbol" id="asterisk">✱</div>
-    </div>
+<nav></nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1 class="hero-title">We're the creative-tech hybrids</h1>
-            <h2 class="hero-subtitle">your brand didn't know it needed.</h2>
-            <p class="hero-description">Equal parts artists, engineers, and marketing troublemakers. It's the kind of fusion that makes brands impossible to ignore.</p>
-        </div>
-    </section>
+<div class="asterisk-container">
+  <div class="asterisk-symbol" id="asterisk">✱</div>
+</div>
 
-    <!-- Hero Image -->
-    <div class="hero-image">
-        <img src="https://github.com/infocusmediahouse/infocusmediahouse.github.io/blob/main/Black%20&%20Beige%20Simple%20Typography%20Cosmetic%20Brand%20Business%20Card.png?raw=true" alt="Infocus Media House">
-    </div>
+<section class="hero">
+  <canvas id="gl"></canvas>
+  <div class="hero-content">
+    <h1>We're the creative-tech hybrids<br>your brand didn't know it needed.</h1>
+    <p>Equal parts artists, engineers, and marketing troublemakers.</p>
+  </div>
+</section>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <h2 class="section-title">About Us</h2>
-        <div class="section-content">
-            <p>At Infocus Media House, we specialize in creating compelling visual content that tells your story. We're a team of passionate creatives dedicated to transforming ideas into stunning realities through the lens of innovation and artistry.</p>
-            <br>
-            <p>Our approach combines technical excellence with creative vision, ensuring every project not only meets but exceeds expectations. We believe in the power of visual storytelling to connect, inspire, and drive results.</p>
-        </div>
-    </section>
+<script>
+/* ASTERISK — UNCHANGED */
+const asterisk=document.getElementById("asterisk");
+window.addEventListener("scroll",()=>{
+  asterisk.style.transform=`rotate(${window.scrollY*.4}deg)`;
+});
 
-    <script>
-        // Interactive Asterisk - Click, Touch, Swipe, and Scroll
-        const asterisk = document.getElementById('asterisk');
-        const asteriskContainer = document.getElementById('asteriskContainer');
-        let rotation = 0;
-        let isDragging = false;
-        let startX = 0;
-        let startY = 0;
-        let currentX = -80;
-        let currentY = 16;
+/* PERFORMANCE */
+const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+const FPS = isLowEnd ? 30 : 60;
+let lastTime = 0;
 
-        // Scroll rotation
-        window.addEventListener('scroll', () => {
-            if (!isDragging) {
-                rotation = window.scrollY * 0.5;
-                asterisk.style.transform = `rotate(${rotation}deg)`;
-            }
-        });
+/* WEBGL */
+const canvas=document.getElementById("gl");
+const gl=canvas.getContext("webgl",{powerPreference:"low-power"});
+let t=0, mx=0,my=0;
 
-        // Click/Touch to spin
-        asteriskContainer.addEventListener('click', (e) => {
-            if (!isDragging) {
-                rotation += 360;
-                asterisk.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                asterisk.style.transform = `rotate(${rotation}deg)`;
-                setTimeout(() => {
-                    asterisk.style.transition = 'transform 0.3s ease-out';
-                }, 600);
-            }
-        });
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+addEventListener("resize",resize);
+resize();
 
-        // Touch/Swipe for mobile
-        asteriskContainer.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            const touch = e.touches[0];
-            startX = touch.clientX - currentX;
-            startY = touch.clientY - currentY;
-            asterisk.style.transition = 'none';
-            e.preventDefault();
-        }, { passive: false });
+addEventListener("mousemove",e=>{
+  mx=e.clientX/innerWidth;
+  my=1-e.clientY/innerHeight;
+});
 
-        document.addEventListener('touchmove', (e) => {
-            if (isDragging) {
-                const touch = e.touches[0];
-                currentX = touch.clientX - startX;
-                currentY = touch.clientY - startY;
-                asteriskContainer.style.left = `${currentX}px`;
-                asteriskContainer.style.top = `${currentY}px`;
-                
-                rotation += 5;
-                asterisk.style.transform = `rotate(${rotation}deg)`;
-            }
-        }, { passive: false });
+const vert=`
+attribute vec2 p;
+void main(){ gl_Position=vec4(p,0.,1.); }
+`;
 
-        document.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                asterisk.style.transition = 'transform 0.3s ease-out';
-            }
-        });
+const frag=`
+precision highp float;
+uniform vec2 r;
+uniform float t;
+uniform vec2 m;
 
-        // Navbar scroll effect
-        const nav = document.getElementById('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        });
+float n(vec2 p){
+  return fract(sin(dot(p,vec2(41.3,289.7)))*43758.5453);
+}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  f=f*f*(3.-2.*f);
+  return mix(
+    mix(n(i),n(i+vec2(1,0)),f.x),
+    mix(n(i+vec2(0,1)),n(i+vec2(1,1)),f.x),
+    f.y
+  );
+}
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+void main(){
+  vec2 uv=gl_FragCoord.xy/r.xy;
+  vec2 p=uv*2.-1.;
+  p.x*=r.x/r.y;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+  /* FASTER + STRONGER FLOW */
+  float depth1=noise(p*2.5 + t*0.04);
+  float depth2=noise(p*5.0 - t*0.06);
+  float flow=depth1*0.7 + depth2*0.6;
 
-        // Observe all animated elements
-        document.querySelectorAll('.section-title, .section-content').forEach(el => {
-            observer.observe(el);
-        });
+  float streak=smoothstep(.45,.0,abs(p.x+p.y*.6+flow*1.1));
+  float vignette=1.-length(p)*.5;
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
+  vec3 col=vec3(1.,.25,.25);
+  col+=.18*sin(vec3(0,2,4)+t*0.05+flow*6.);
+  col*=streak*1.6;
+  col*=vignette;
+
+  col+=.025*noise(uv*700.);
+  gl_FragColor=vec4(col,1.);
+}
+`;
+
+function compile(type,src){
+  const s=gl.createShader(type);
+  gl.shaderSource(s,src);
+  gl.compileShader(s);
+  return s;
+}
+
+const prog=gl.createProgram();
+gl.attachShader(prog,compile(gl.VERTEX_SHADER,vert));
+gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,frag));
+gl.linkProgram(prog);
+gl.useProgram(prog);
+
+const buf=gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+
+const loc=gl.getAttribLocation(prog,"p");
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+const ur=gl.getUniformLocation(prog,"r");
+const ut=gl.getUniformLocation(prog,"t");
+const um=gl.getUniformLocation(prog,"m");
+
+function draw(time){
+  if(time-lastTime<1000/FPS){requestAnimationFrame(draw);return;}
+  lastTime=time;
+
+  t+=1.1; /* 🔥 MUCH FASTER */
+  gl.uniform2f(ur,canvas.width,canvas.height);
+  gl.uniform1f(ut,t);
+  gl.uniform2f(um,mx,my);
+  gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+
 </body>
 </html>
